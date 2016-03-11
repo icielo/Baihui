@@ -10,22 +10,14 @@ import com.lezic.core.orm.annotation.Table;
 @Table(name = "product")
 public class Product {
 
-    /**
-     * 条码
-     */
+
     @Id
     @Column(type = Column.Type.TEXT)
     private String code;
 
-    /**
-     * 名称
-     */
     @Column(type = Column.Type.TEXT)
     private String name;
 
-    /**
-     * 价格
-     */
     @Column(type = Column.Type.REAL)
     private Float price;
 

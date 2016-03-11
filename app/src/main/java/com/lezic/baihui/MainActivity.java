@@ -1,5 +1,6 @@
 package com.lezic.baihui;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -18,8 +19,14 @@ import com.lezic.app.product.task.ExportThread;
 import com.lezic.app.product.vo.Product;
 import com.lezic.core.util.UtilData;
 import com.lezic.core.util.view.UtilConfirmDialog;
+import com.zxing.IntentIntegrator;
+import com.zxing.IntentResult;
 
 public class MainActivity extends AppCompatActivity {
+
+    private final static int SCANNIN_GREQUEST_CODE = 1;
+
+    private Activity activity;
 
     /**
      * 条码
@@ -51,6 +58,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        this.activity = this;
         //输入框
         editTextCode = (EditText) findViewById(R.id.editTextCode);
         editTextPrice = (EditText) findViewById(R.id.editTextPrice);
@@ -89,7 +97,8 @@ public class MainActivity extends AppCompatActivity {
     private final Button.OnClickListener doScan = new Button.OnClickListener() {
         @Override
         public void onClick(View v) {
-
+            IntentIntegrator integrator = new IntentIntegrator(activity);
+            integrator.initiateScan();
         }
 
     };
@@ -99,6 +108,15 @@ public class MainActivity extends AppCompatActivity {
      */
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        IntentResult scanResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, intent);
+        if (scanResult != null) {
+            this.editTextCode.setText(scanResult.getContents());
+            initProduct();
+        } else {
+            Toast toast = Toast.makeText(getApplicationContext(), "未扫描到数据！", Toast.LENGTH_LONG);
+            toast.setGravity(Gravity.CENTER, 0, 0);
+            toast.show();
+        }
     }
 
     /**
